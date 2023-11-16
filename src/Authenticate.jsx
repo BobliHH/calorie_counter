@@ -1,12 +1,35 @@
 const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
-const { JWT_SECRET } = require('../config/keys');
+// const { JWT_SECRET } = require('../config/keys');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+mongoose.connect()
 
 const User = require('../models/User');
 const Product = require('../models/Product');
+
+
+const Schema = mongoose.Schema;
+
+const UserSchema = new Schema({
+    username: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    salt: { type: String, required: true },
+    joined: { type: Date, default: Date.now },
+    profile: {
+        name: { type: String },
+        age: { type: Number },
+        gender: { type: String },
+        location: { type: String },
+        bio: { type: String }
+    }
+});
+
+
+module.exports = User = mongoose.model('User', UserSchema);
 
 // Validate input for registration
 const validateRegisterInput = [
